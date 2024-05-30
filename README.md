@@ -1,6 +1,7 @@
 # Getting Started 
 
-# TEAM4 DevOps F5
+# TEAM4 DevOps F5 
+![Logo Team-4](./src/main/resources/static/images/T4.png)
 
 ## Project: Task Organizer in Java
 
