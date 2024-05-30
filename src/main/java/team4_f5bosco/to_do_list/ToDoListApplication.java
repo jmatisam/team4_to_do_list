@@ -1,13 +1,9 @@
 package team4_f5bosco.to_do_list;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-@SpringBootApplication
 public class ToDoListApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ToDoListApplication.class, args);
+		System.out.println(" Welcom to the Guide for First Steps in the App");
 	}
 
 }
