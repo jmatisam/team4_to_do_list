@@ -1,146 +1,163 @@
 package team4_f5bosco.to_do_list;
 
-import javax.swing.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Image;
+import java.awt.Panel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 
-public class ToDoListApplication {
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+
+import org.springframework.web.servlet.tags.form.FormTag;
+
+public class ToDoListApplication extends JFrame {
     private static ArrayList<AddTask> tasks = new ArrayList<>();
     private static JFrame mainFrame;
     private static JFrame addTaskFrame;
     private static JFrame listTaskFrame;
     private static JFrame deleteTaskFrame;
+    private static JFrame markCompletedFrame;
+    private static final String FILE_PATH = "tasks.json";
 
-    public static void main(String[] args) {
-        // Crear la ventana principal
-        mainFrame = new JFrame("Task Manager");
+	public static void main(String[] args) {
+        JFrame mainFrame = new JFrame("Task Manager");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setSize(400, 300);
+        mainFrame.setSize(800, 400);
         mainFrame.setLayout(null);
+		mainFrame.setLocationRelativeTo(null);
 
-        // Fondo e icono
-        // Aquí deberías agregar tu imagen de fondo e icono
 
-        // Botón para añadir tareas
-        JButton addTaskButton = new JButton("Add Task");
-        addTaskButton.setBounds(50, 50, 120, 30);
+		JButton addTaskButton = new JButton("Add Task");
+        addTaskButton.setBounds(100, 50, 170, 70);
         addTaskButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                openAddTaskWindow();
+                openAddTaskWindow("a");
             }
         });
-        mainFrame.add(addTaskButton);
-
-        // Botón para listar tareas
+		
+	    // Botón para listar tareas
         JButton listTaskButton = new JButton("List Tasks");
-        listTaskButton.setBounds(200, 50, 120, 30);
+        listTaskButton.setBounds(350, 50, 170, 70);
         listTaskButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 openListTaskWindow();
             }
         });
-        mainFrame.add(listTaskButton);
 
         // Botón para borrar tareas
         JButton deleteTaskButton = new JButton("Erased Tasks");
-        deleteTaskButton.setBounds(50, 150, 120, 30);
+        deleteTaskButton.setBounds(250, 150, 170, 70);
         deleteTaskButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 openDeleteTaskWindow();
             }
         });
-        mainFrame.add(deleteTaskButton);
-
+        
         // Botón para marcar tareas como completadas
         JButton markCompletedButton = new JButton("Finished Tasks");
-        markCompletedButton.setBounds(200, 150, 120, 30);
+        markCompletedButton.setBounds(500, 150, 170, 70);
         markCompletedButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 openMarkCompletedWindow();
             }
         });
-        mainFrame.add(markCompletedButton);
-
-        // Mostrar la ventana principal
-        mainFrame.setVisible(true);
+       
 		
-    }
+        mainFrame.add(addTaskButton);
+		mainFrame.add(deleteTaskButton);
+		mainFrame.add(listTaskButton);
+		mainFrame.add(markCompletedButton);
 
-    private static void openAddTaskWindow() {
-		// Crear la ventana para añadir tarea
-		addTaskFrame = new JFrame("Añadir Tarea");
-		addTaskFrame.setSize(300, 200);
-		addTaskFrame.setLayout(null);
-	
-		// Campo para el nombre de la tarea
-		JLabel nameLabel = new JLabel("Nombre:");
-		nameLabel.setBounds(10, 10, 80, 25);
-		addTaskFrame.add(nameLabel);
-	
-		JTextField nameField = new JTextField(20);
-		nameField.setBounds(100, 10, 165, 25);
-		addTaskFrame.add(nameField);
-	
-		// Campo para el tiempo
-		JLabel timeLabel = new JLabel("Tiempo:");
-		timeLabel.setBounds(10, 40, 80, 25);
-		addTaskFrame.add(timeLabel);
-	
-		JTextField timeField = new JTextField(20);
-		timeField.setBounds(100, 40, 165, 25);
-		addTaskFrame.add(timeField);
-	
-		// Campo para la persona asignada
-		JLabel personLabel = new JLabel("Persona:");
-		personLabel.setBounds(10, 70, 80, 25);
-		addTaskFrame.add(personLabel);
-	
-		JTextField personField = new JTextField(20);
-		personField.setBounds(100, 70, 165, 25);
-		addTaskFrame.add(personField);
-	
-		// Checkbox para la tarea completada (no seleccionable inicialmente)
-		JCheckBox isCompletedCheckBox = new JCheckBox("Completada");
-		isCompletedCheckBox.setBounds(100, 100, 150, 25);
-		isCompletedCheckBox.setEnabled(false);
-		addTaskFrame.add(isCompletedCheckBox);
-	
-		// Botón para aceptar y añadir la tarea
-		JButton acceptButton = new JButton("Aceptar");
-		acceptButton.setBounds(100, 130, 80, 25);
-		acceptButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// Crear una nueva tarea con los datos ingresados
-				AddTask newTask = new AddTask(
-					nameField.getText(),
-					timeField.getText(),
-					personField.getText(),
-					isCompletedCheckBox.isSelected()
-				);
-				// Añadir la nueva tarea a la lista
-				tasks.add(newTask);
-				
-				// Cerrar la ventana de añadir tarea
-				addTaskFrame.dispose();
-			}
-		});
-		addTaskFrame.add(acceptButton);
-	
-		// Mostrar la ventana para añadir tarea
-		addTaskFrame.setVisible(true);
+		ImageIcon imagen = new ImageIcon("src\\main\\resources\\static\\images\\background.jpg");
+        JLabel background = new JLabel();
+        background.setBounds(0, 0, mainFrame.getWidth(), mainFrame.getHeight());
+        background.setIcon(new ImageIcon(imagen.getImage().getScaledInstance(background.getWidth(), background.getHeight(), Image.SCALE_SMOOTH)));
+        mainFrame.add(background);
+
+        
+        mainFrame.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                
+                int newWidth = mainFrame.getWidth();
+                int newHeight = mainFrame.getHeight();
+                background.setBounds(0, 0, newWidth, newHeight);
+                background.setIcon(new ImageIcon(imagen.getImage().getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH)));
+            }
+        });
+		mainFrame.setVisible(true);
 
 	}
-	
-    private static void openListTaskWindow() {
-        // Lógica para abrir la ventana de listar tareas
+	private static void openAddTaskWindow(String string) {
+        addTaskFrame = new JFrame("Add Task");
+        addTaskFrame.setSize(340, 340);
+        addTaskFrame.setLayout(null);
+		addTaskFrame.setLocationRelativeTo(null);
+
+        JLabel nameLabel = new JLabel("Task:");
+        nameLabel.setBounds(10, 16, 100, 25);
+        addTaskFrame.add(nameLabel);
+
+        JTextField nameField = new JTextField(20);
+        nameField.setBounds(100, 10, 175, 30);
+        addTaskFrame.add(nameField);
+
+        JLabel timeLabel = new JLabel("Time:");
+        timeLabel.setBounds(10, 52, 80, 30);
+        addTaskFrame.add(timeLabel);
+
+        JTextField timeField = new JTextField(20);
+        timeField.setBounds(100, 55, 175, 30);
+        addTaskFrame.add(timeField);
+
+        JLabel personLabel = new JLabel("Person:");
+        personLabel.setBounds(10, 92, 100, 40);
+        addTaskFrame.add(personLabel);
+
+        JTextField personField = new JTextField(20);
+        personField.setBounds(100, 100, 175, 30);
+        addTaskFrame.add(personField);
+
+        JCheckBox isCompletedCheckBox = new JCheckBox("Completed");
+        isCompletedCheckBox.setBounds(100, 150, 200, 50);
+        isCompletedCheckBox.setEnabled(false);
+        addTaskFrame.add(isCompletedCheckBox);
+
+        JButton acceptButton = new JButton("Accept");
+        acceptButton.setBounds(100, 200, 120, 40);
+		acceptButton.setBackground(new Color(100, 255, 51));
+		acceptButton.setFont(new Font("arial", Font.BOLD,16));
+        acceptButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                AddTask newTask = new AddTask(
+                        nameField.getText(),
+                        timeField.getText(),
+                        personField.getText(),
+                        isCompletedCheckBox.isSelected()
+                );
+                tasks.add(newTask);
+                //saveTasks();
+                addTaskFrame.dispose();
+            }
+        });
+        addTaskFrame.add(acceptButton);
+
+        addTaskFrame.setVisible(true);
     }
 
-    private static void openDeleteTaskWindow() {
-        // Lógica para abrir la ventana de borrar tareas
-    }
-
-    private static void openMarkCompletedWindow() {
-        // Lógica para abrir la ventana de marcar tareas como completadas
-    }
 	
 }
+
