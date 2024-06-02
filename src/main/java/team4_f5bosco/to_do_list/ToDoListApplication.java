@@ -1,31 +1,31 @@
 package team4_f5bosco.to_do_list;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
-import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.KeyEvent;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-import org.springframework.web.servlet.tags.form.FormTag;
 
 public class ToDoListApplication extends JFrame {
     private static ArrayList<AddTask> tasks = new ArrayList<>();
-    private static JFrame mainFrame;
+
+    //private static JFrame mainFrame;
     private static JFrame addTaskFrame;
     private static JFrame listTaskFrame;
     private static JFrame deleteTaskFrame;
@@ -33,6 +33,12 @@ public class ToDoListApplication extends JFrame {
     private static final String FILE_PATH = "tasks.json";
 
 	public static void main(String[] args) {
+		loadTasks();
+		System.out.println("Tareas cargadas:");
+        for (AddTask task : tasks) {
+			System.out.println("Tareas en la lista: " + task.getName()+ " And Person is:" + task.getPerson());
+		}
+
         JFrame mainFrame = new JFrame("Task Manager");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(800, 400);
@@ -43,6 +49,7 @@ public class ToDoListApplication extends JFrame {
 		JButton addTaskButton = new JButton("Add Task");
         addTaskButton.setBounds(100, 50, 170, 70);
         addTaskButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 openAddTaskWindow("a");
             }
@@ -52,6 +59,7 @@ public class ToDoListApplication extends JFrame {
         JButton listTaskButton = new JButton("List Tasks");
         listTaskButton.setBounds(350, 50, 170, 70);
         listTaskButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 openListTaskWindow();
             }
@@ -61,6 +69,7 @@ public class ToDoListApplication extends JFrame {
         JButton deleteTaskButton = new JButton("Erased Tasks");
         deleteTaskButton.setBounds(250, 150, 170, 70);
         deleteTaskButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 openDeleteTaskWindow();
             }
@@ -70,6 +79,7 @@ public class ToDoListApplication extends JFrame {
         JButton markCompletedButton = new JButton("Finished Tasks");
         markCompletedButton.setBounds(500, 150, 170, 70);
         markCompletedButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 openMarkCompletedWindow();
             }
@@ -140,24 +150,40 @@ public class ToDoListApplication extends JFrame {
         acceptButton.setBounds(100, 200, 120, 40);
 		acceptButton.setBackground(new Color(100, 255, 51));
 		acceptButton.setFont(new Font("arial", Font.BOLD,16));
-        acceptButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                AddTask newTask = new AddTask(
-                        nameField.getText(),
-                        timeField.getText(),
-                        personField.getText(),
-                        isCompletedCheckBox.isSelected()
-                );
-                tasks.add(newTask);
-                //saveTasks();
-                addTaskFrame.dispose();
-            }
+        acceptButton.addActionListener((ActionEvent e) -> {
+            AddTask newTask = new AddTask(
+                    nameField.getText(),
+                    timeField.getText(),
+                    personField.getText(),
+                    isCompletedCheckBox.isSelected()
+            );
+            tasks.add(newTask);
+            saveTasks();
+            addTaskFrame.dispose();
         });
         addTaskFrame.add(acceptButton);
 
         addTaskFrame.setVisible(true);
     }
 
-	
+	private static void saveTasks() {
+        Gson gson = new Gson();
+        try (FileWriter writer = new FileWriter(FILE_PATH)) {
+            gson.toJson(tasks, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void loadTasks() {
+        Gson gson = new Gson();
+        try {
+            String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
+            tasks = gson.fromJson(json, new TypeToken<ArrayList<AddTask>>(){}.getType());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+	}
 }
 
