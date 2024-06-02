@@ -2,7 +2,7 @@ package team4_f5bosco.to_do_list;
 
 public class AddTask {
     private String name;
-    private String time;
+    private String time; 
     private String person;
     private boolean isCompleted;
 
@@ -22,7 +22,7 @@ public class AddTask {
         this.name = name;
     }
 
-    public String getTime() {
+    public String  getTime() {
         return time;
     }
 
@@ -45,4 +45,6 @@ public class AddTask {
     public void setCompleted(boolean completed) {
         isCompleted = completed;
     }
+    
+
 }
